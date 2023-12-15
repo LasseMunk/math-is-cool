@@ -31,6 +31,7 @@ export const ArcAngles = (p5: P5CanvasInstance) => {
 	p5.setup = () => {
 		p5.createCanvas(windowWidth, windowHeight, p5.WEBGL);
 		p5.textFont(myFont);
+		// p5.smooth();
 	};
 
 	// const setProjection = () => {
@@ -64,7 +65,7 @@ export const ArcAngles = (p5: P5CanvasInstance) => {
 		p5.pop();
 	};
 
-	const drawArc = (sizeMultiplier: number) => {
+	const drawArc = (sizeMultiplier: number, arcs: number) => {
 		// https://p5js.org/reference/#/p5/arc
 		p5.push();
 		p5.noStroke();
@@ -75,25 +76,45 @@ export const ArcAngles = (p5: P5CanvasInstance) => {
 			p5.width * sizeMultiplier,
 			p5.height * sizeMultiplier,
 			0,
-			p5.PI
+			arcs
 		);
 		p5.pop();
 	};
+
+	const drawCircle = (x: number, y: number, diameter: number) => {
+		p5.ellipseMode(p5.RADIUS);
+		p5.push();
+
+		p5.stroke(colors.darkGrey);
+		p5.circle(x, y, diameter);
+		p5.pop();
+	};
+
+	let time: number = 0;
+
+	const timeRamp = (frequency: number) => {
+		time += p5.deltaTime * 0.001 * frequency;
+		time = time % 1;
+		return time;
+	};
+
 	p5.draw = () => {
-		p5.fill(colors.primary);
-		// p5.noStroke();
+		timeRamp(0.5);
+
+		p5.noStroke();
 		drawCoordinateSystem(0.5);
-		drawArc(0.1);
+		drawArc(0.1, p5.PI * 2 * time);
 
-		// p5.translate(0, 0, -p5.width / 2);
-		// p5.plane(p5.width * 2, p5.height * 2);
+		p5.fill(colors.primary);
+		p5.translate(0, 0, -p5.width / 2);
+		p5.plane(p5.width * 2, p5.height * 2);
 
+		drawCircle(0, 0, windowWidth * 0.5);
 		// spinning type
 		// p5.rotateY(p5.radians(-p5.frameCount / 2));
 		// p5.textSize(16);
 		// p5.textAlign("left");
 
 		// p5.text("This is a test font", 0, 0);
-		// (p5.sin(p5.frameCount * 0.01) * p5.height) / 6
 	};
 };
