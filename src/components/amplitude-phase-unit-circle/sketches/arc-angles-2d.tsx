@@ -1,5 +1,5 @@
 import { P5CanvasInstance } from "@p5-wrapper/react";
-import { colors } from "../..";
+import { colors } from "../../..";
 
 export const ArcAngles2D = (p5: P5CanvasInstance) => {
 	const windowWidth = 600;
@@ -109,6 +109,27 @@ export const ArcAngles2D = (p5: P5CanvasInstance) => {
 			amplitudeHistory.shift();
 	};
 
+	const drawText = (
+		p5: P5CanvasInstance,
+		circleDiameter: number,
+		radians: number,
+		windowHeight: number
+	) => {
+		p5.noStroke();
+		p5.fill(colors.lightGrey);
+		p5.textSize(circleDiameter * 0.3);
+		p5.text(
+			`Radians: ${radians.toFixed(2)} `,
+			circleDiameter,
+			windowHeight * 0.5 - 20
+		);
+		p5.text(
+			`Angle: ${(radians * (180 / p5.PI)).toFixed(0)} `,
+			circleDiameter,
+			windowHeight * 0.5 - 5
+		);
+	};
+
 	p5.draw = () => {
 		timeRamp(0.25); // 0.5 Hz, counter
 		const radians = p5.PI * 2 * time; // convert time to radians
@@ -131,18 +152,6 @@ export const ArcAngles2D = (p5: P5CanvasInstance) => {
 
 		drawWaveForm();
 
-		p5.noStroke();
-		p5.fill(colors.lightGrey);
-		p5.textSize(circleDiameter * 0.3);
-		p5.text(
-			`Radians: ${radians.toFixed(2)} `,
-			circleDiameter,
-			windowHeight * 0.5 - 20
-		);
-		p5.text(
-			`Angle: ${(radians * (180 / p5.PI)).toFixed(0)} `,
-			circleDiameter,
-			windowHeight * 0.5 - 5
-		);
+		drawText(p5, circleDiameter, radians, windowHeight);
 	};
 };

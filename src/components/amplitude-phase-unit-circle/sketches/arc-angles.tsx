@@ -1,6 +1,6 @@
 import { P5CanvasInstance } from "@p5-wrapper/react";
-import { FontShareTechMono } from "../../fonts/share-tech-mono-font";
-import { colors } from "../..";
+import { FontShareTechMono } from "../../../fonts/share-tech-mono-font";
+import { colors } from "../../..";
 
 // https://editor.p5js.org/ffd8/sketches/TFVEgMPgj
 
