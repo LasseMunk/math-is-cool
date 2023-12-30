@@ -6,6 +6,32 @@ export const Vectors1 = (p5: P5CanvasInstance) => {
 	const windowHeight = 400;
 	const units = 8;
 
+	const triLarge = [
+		{ x: -3, y: -3 },
+		{ x: 1, y: 2 },
+		{ x: 2, y: -2 },
+	];
+
+	const triSmall = [
+		{ x: -1, y: -1 },
+		{ x: -1, y: 1 },
+		{ x: 1, y: -1 },
+	];
+
+	const squareSmall = [
+		{ x: -1, y: 0 },
+		{ x: 0, y: -1 },
+		{ x: 1, y: 0 },
+		{ x: 0, y: 1 },
+	];
+
+	const reactSmall = [
+		{ x: 2, y: 1 },
+		{ x: 2, y: 3 },
+		{ x: 3, y: 3 },
+		{ x: 3, y: 1 },
+	];
+
 	p5.setup = () => {
 		p5.createCanvas(windowWidth, windowHeight);
 		p5.textFont("Courier New");
@@ -66,53 +92,23 @@ export const Vectors1 = (p5: P5CanvasInstance) => {
 		p5.pop();
 	};
 
-	/*
-	const drawText = (
-		p5: P5CanvasInstance,
-		circleDiameter: number,
-		radians: number,
-		windowHeight: number
+	const drawPositionText = (
+		position: { x: number; y: number },
+		color: string,
+		multiplier: number
 	) => {
+		const positionPixels = convertCoordinateToPixels(
+			position.x * multiplier,
+			position.y * multiplier
+		);
+		const positionText = `(${position.x * multiplier},${
+			position.y * multiplier
+		})`;
 		p5.noStroke();
-		p5.fill(colors.lightGrey);
-		p5.textSize(10);
-		p5.text(
-			`Radians: ${radians.toFixed(2)} `,
-			circleDiameter,
-			windowHeight * 0.5 - 20
-		);
-		p5.text(
-			`Angle: ${(radians * (180 / p5.PI)).toFixed(0)} `,
-			circleDiameter,
-			windowHeight * 0.5 - 5
-		);
+		p5.fill(color);
+		p5.textSize(15);
+		p5.text(positionText, positionPixels.x, positionPixels.y);
 	};
-	*/
-	const triLarge = [
-		{ x: -3, y: -3 },
-		{ x: 1, y: 2 },
-		{ x: 2, y: -2 },
-	];
-
-	const triSmall = [
-		{ x: -1, y: -1 },
-		{ x: 0.5, y: 1 },
-		{ x: 1, y: -1 },
-	];
-
-	const squareSmall = [
-		{ x: -1, y: 0 },
-		{ x: 0, y: -1 },
-		{ x: 1, y: 0 },
-		{ x: 0, y: 1 },
-	];
-
-	const reactSmall = [
-		{ x: 2, y: 1 },
-		{ x: 2, y: 3 },
-		{ x: 3, y: 3 },
-		{ x: 3, y: 1 },
-	];
 
 	const drawArrayOfPoints = (
 		points: {
@@ -142,14 +138,15 @@ export const Vectors1 = (p5: P5CanvasInstance) => {
 		drawCoordinateSystem();
 
 		drawArrayOfPoints(triLarge, colors.secondary, 1);
+		drawPositionText(triLarge[1], colors.darkGrey, 1);
+
 		drawArrayOfPoints(triSmall, colors.accent1, 1);
+		drawPositionText(triSmall[1], colors.darkGrey, 1);
+
 		drawArrayOfPoints(squareSmall, colors.accent2, 2);
+		drawPositionText(squareSmall[1], colors.darkGrey, 2);
+
 		drawArrayOfPoints(reactSmall, colors.accent3, 1);
-
-		// drawLine(coords[0].x, coords[0].y, coords[1].x, coords[1].y, time);
-		// drawLine(coords[1].x, coords[1].y, coords[2].x, coords[2].y, time);
-		// drawLine(coords[2].x, coords[2].y, coords[0].x, coords[0].y, time);
-
-		// drawText(p5, 100, radians, windowHeight);
+		drawPositionText(reactSmall[1], colors.darkGrey, 1);
 	};
 };
