@@ -1,5 +1,5 @@
 import { P5CanvasInstance } from "@p5-wrapper/react";
-import { colors } from "../../..";
+import { P5_TEXT_FONT, colors } from "../../..";
 
 export const Vectors1 = (p5: P5CanvasInstance) => {
 	const windowWidth = 400;
@@ -34,7 +34,7 @@ export const Vectors1 = (p5: P5CanvasInstance) => {
 
 	p5.setup = () => {
 		p5.createCanvas(windowWidth, windowHeight);
-		p5.textFont("Courier New");
+		p5.textFont(P5_TEXT_FONT);
 	};
 
 	const convertCoordinateToPixels = (x: number, y: number) => {
@@ -138,15 +138,13 @@ export const Vectors1 = (p5: P5CanvasInstance) => {
 		drawCoordinateSystem();
 
 		drawArrayOfPoints(triLarge, colors.secondary, 1);
-		drawPositionText(triLarge[1], colors.darkGrey, 1);
-
 		drawArrayOfPoints(triSmall, colors.accent1, 1);
-		drawPositionText(triSmall[1], colors.darkGrey, 1);
-
 		drawArrayOfPoints(squareSmall, colors.accent2, 2);
-		drawPositionText(squareSmall[1], colors.darkGrey, 2);
-
 		drawArrayOfPoints(reactSmall, colors.accent3, 1);
+
+		drawPositionText(triLarge[1], colors.darkGrey, 1);
+		drawPositionText(triSmall[1], colors.darkGrey, 1);
+		drawPositionText(squareSmall[1], colors.darkGrey, 2);
 		drawPositionText(reactSmall[1], colors.darkGrey, 1);
 	};
 };

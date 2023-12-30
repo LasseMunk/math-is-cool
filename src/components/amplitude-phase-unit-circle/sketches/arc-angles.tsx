@@ -1,6 +1,7 @@
 import { P5CanvasInstance } from "@p5-wrapper/react";
 import { FontShareTechMono } from "../../../fonts/share-tech-mono-font";
 import { colors } from "../../..";
+import { Font } from "p5";
 
 // https://editor.p5js.org/ffd8/sketches/TFVEgMPgj
 
@@ -24,7 +25,7 @@ export const ArcAngles = (p5: P5CanvasInstance) => {
 
 	// const arcMultiplier = 0.5;
 
-	let myFont: any;
+	let myFont: Font;
 	p5.preload = () => {
 		myFont = p5.loadFont(FontShareTechMono); // load a font via base64?!
 	};

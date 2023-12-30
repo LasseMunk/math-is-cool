@@ -1,5 +1,5 @@
 import { P5CanvasInstance } from "@p5-wrapper/react";
-import { colors } from "../../..";
+import { P5_TEXT_FONT, colors } from "../../..";
 
 export const ArcAngles2D = (p5: P5CanvasInstance) => {
 	const windowWidth = 600;
@@ -10,7 +10,7 @@ export const ArcAngles2D = (p5: P5CanvasInstance) => {
 
 	p5.setup = () => {
 		p5.createCanvas(windowWidth, windowHeight);
-		p5.textFont("Courier New");
+		p5.textFont(P5_TEXT_FONT);
 	};
 
 	const drawCoordinateSystem = (systemMultiplier: number) => {
