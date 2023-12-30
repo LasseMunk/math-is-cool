@@ -61,7 +61,7 @@ export const Vectors1 = (p5: P5CanvasInstance) => {
 		p5.push();
 		p5.stroke(strokeColor);
 		p5.strokeWeight(3);
-		p5.drawingContext.setLineDash([5, 10 * (1 + p5.cos(radians))]); //create the dashed line pattern here
+		p5.drawingContext.setLineDash([5, 2 + 10 * (1 + p5.cos(radians))]); //create the dashed line pattern here
 		p5.line(start.x, start.y, end.x, end.y);
 		p5.pop();
 	};
