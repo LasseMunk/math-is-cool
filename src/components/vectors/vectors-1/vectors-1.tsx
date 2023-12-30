@@ -52,14 +52,15 @@ export const Vectors1 = (p5: P5CanvasInstance) => {
 		yStart: number,
 		xEnd: number,
 		yEnd: number,
-		ramp: number
+		ramp: number,
+		strokeColor: string
 	) => {
 		const radians = ramp * p5.TWO_PI;
 		const start = convertCoordinateToPixels(xStart, yStart);
 		const end = convertCoordinateToPixels(xEnd, yEnd);
 		p5.push();
-		p5.stroke(colors.secondary);
-		p5.strokeWeight(2);
+		p5.stroke(strokeColor);
+		p5.strokeWeight(3);
 		p5.drawingContext.setLineDash([5, 10 * (1 + p5.cos(radians))]); //create the dashed line pattern here
 		p5.line(start.x, start.y, end.x, end.y);
 		p5.pop();
@@ -87,10 +88,51 @@ export const Vectors1 = (p5: P5CanvasInstance) => {
 		);
 	};
 	*/
-	const coords = [
+	const triLarge = [
 		{ x: -3, y: -3 },
 		{ x: 1, y: 2 },
+		{ x: 2, y: -2 },
 	];
+
+	const triSmall = [
+		{ x: -1, y: -1 },
+		{ x: 0.5, y: 1 },
+		{ x: 1, y: -1 },
+	];
+
+	const squareSmall = [
+		{ x: -1, y: 0 },
+		{ x: 0, y: -1 },
+		{ x: 1, y: 0 },
+		{ x: 0, y: 1 },
+	];
+
+	const reactSmall = [
+		{ x: 2, y: 1 },
+		{ x: 2, y: 3 },
+		{ x: 3, y: 3 },
+		{ x: 3, y: 1 },
+	];
+
+	const drawArrayOfPoints = (
+		points: {
+			x: number;
+			y: number;
+		}[],
+		strokeColor: string,
+		multiplier: number
+	) => {
+		for (let i = 0; i < points.length; i++) {
+			drawLine(
+				points[i].x * multiplier,
+				points[i].y * multiplier,
+				points[(i + 1) % points.length].x * multiplier,
+				points[(i + 1) % points.length].y * multiplier,
+				time,
+				strokeColor
+			);
+		}
+	};
 	p5.draw = () => {
 		timeRamp(0.25); // 0.5 Hz, counter
 
@@ -99,7 +141,14 @@ export const Vectors1 = (p5: P5CanvasInstance) => {
 		p5.noStroke();
 		drawCoordinateSystem();
 
-		drawLine(coords[0].x, coords[0].y, coords[1].x, coords[1].y, time);
+		drawArrayOfPoints(triLarge, colors.secondary, 1);
+		drawArrayOfPoints(triSmall, colors.accent1, 1);
+		drawArrayOfPoints(squareSmall, colors.accent2, 2);
+		drawArrayOfPoints(reactSmall, colors.accent3, 1);
+
+		// drawLine(coords[0].x, coords[0].y, coords[1].x, coords[1].y, time);
+		// drawLine(coords[1].x, coords[1].y, coords[2].x, coords[2].y, time);
+		// drawLine(coords[2].x, coords[2].y, coords[0].x, coords[0].y, time);
 
 		// drawText(p5, 100, radians, windowHeight);
 	};
