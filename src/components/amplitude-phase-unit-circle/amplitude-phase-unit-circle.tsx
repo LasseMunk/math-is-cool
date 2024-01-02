@@ -17,7 +17,7 @@ export const AmplitudePhaseUnitCircle = () => {
 		<Grid
 			xs={6}
 			maxWidth={"600px"}
-			border={"1px solid #bdbdbd"}
+			// border={"1px solid #bdbdbd"}
 			borderRadius={2}
 			padding={2}
 		>
