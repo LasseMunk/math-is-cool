@@ -12,6 +12,10 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
+		"@emotion/react": "^11.11.3",
+		"@emotion/styled": "^11.11.0",
+		"@mui/base": "^5.0.0-beta.29",
+		"@mui/system": "^5.15.2",
 		"@types/react-syntax-highlighter": "^15.5.11",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
