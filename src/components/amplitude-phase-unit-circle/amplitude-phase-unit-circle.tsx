@@ -23,7 +23,12 @@ export const AmplitudePhaseUnitCircle = () => {
 		>
 			<SummingSinewavesDescription />
 
-			<Stack width={"100%"} direction={"row"} gap={2}>
+			<Stack
+				width={"100%"}
+				direction={"row"}
+				gap={2}
+				justifyContent={"center"}
+			>
 				<ReactP5Wrapper
 					sketch={ArcAngles2DSummingMultiple}
 					frequencySliderA={frequencySliderA}
