@@ -9,10 +9,10 @@ type MySketchProps = SketchProps & {
 };
 
 export const ArcAngles2DSummingMultiple: Sketch<MySketchProps> = (p5) => {
-	const windowWidth = 600;
-	const circleDiameter = windowWidth * 0.25 - 100;
-	const windowHeight = circleDiameter * 10;
+	const circleDiameter = 50;
 	const circleSpacing = 20;
+	const windowWidth = 6 * circleDiameter + 3 * circleSpacing;
+	const windowHeight = circleDiameter * 10;
 
 	const amplitudeHistoryA: number[] = [];
 	const amplitudeHistoryB: number[] = [];
@@ -38,13 +38,14 @@ export const ArcAngles2DSummingMultiple: Sketch<MySketchProps> = (p5) => {
 
 	const drawCoordinateSystemX = (
 		xStart: number,
-		color: string,
-		yOffset: number
+		xEnd: number,
+		yOffset: number,
+		color: string
 	) => {
 		p5.push();
 		p5.stroke(color);
 		p5.point(0, 0, 0);
-		p5.line(xStart, yOffset, p5.width * 0.5, yOffset);
+		p5.line(xStart, yOffset, xEnd, yOffset);
 		p5.pop();
 	};
 	const drawCoordinateSystemY = (color: string, yBottom: number) => {
@@ -58,55 +59,25 @@ export const ArcAngles2DSummingMultiple: Sketch<MySketchProps> = (p5) => {
 	const drawCoordinateSystem = () => {
 		drawCoordinateSystemX(
 			-p5.width * 0.5,
-			colors.lightGrey,
-			-circleDiameter * 4 + circleSpacing
-		);
-		drawCoordinateSystemX(
-			-p5.width * 0.5,
-			colors.lightGrey,
-			-circleDiameter
-		);
-
-		// ==================== RESULT ====================
-		drawCoordinateSystemX(
-			circleDiameter,
-			colors.lightGrey,
-			circleDiameter - circleSpacing
-		);
-		drawCoordinateSystemX(
-			circleDiameter,
-			colors.lightGrey,
-			circleDiameter * 2 - circleSpacing
-		);
-		drawCoordinateSystemX(
-			circleDiameter,
-			colors.darkGrey,
-			circleDiameter * 3 - circleSpacing
-		);
-		drawCoordinateSystemX(
-			circleDiameter,
-			colors.lightGrey,
-			circleDiameter * 4 - circleSpacing
-		);
-		drawCoordinateSystemX(
-			circleDiameter,
-			colors.lightGrey,
-			circleDiameter * 5 - circleSpacing
+			p5.width * 0.5,
+			-circleDiameter,
+			colors.lightGrey
 		);
 
 		drawCoordinateSystemY(colors.lightGrey, 0);
 	};
 
 	const drawArc = (
+		xOffset: number = 0,
+		yOffset: number = 0,
 		size: number,
 		arcs: number,
-		yOffset: number = 0,
 		color: string
 	) => {
 		p5.push();
 		p5.noFill();
 		p5.stroke(color);
-		p5.arc(0, yOffset, size, size, arcs, 0);
+		p5.arc(xOffset, yOffset, size, size, arcs, 0);
 		p5.pop();
 	};
 
@@ -126,47 +97,54 @@ export const ArcAngles2DSummingMultiple: Sketch<MySketchProps> = (p5) => {
 	};
 
 	const drawPointAndLinesToCircleCircumference = (
+		xOffset: number = 0,
+		yOffset: number = 0,
+		xEnd: number,
 		angleInRadians: number,
 		radius: number,
-		yOffset: number = 0,
 		color: string
 	) => {
-		const x = radius * p5.cos(angleInRadians);
+		const x = radius * p5.cos(angleInRadians) + xOffset;
 		const y = radius * p5.sin(angleInRadians) + yOffset;
 
 		p5.push();
 		p5.stroke(colors.lightGrey);
 
-		p5.line(0, 0 + yOffset, x, y); // center to dot
+		p5.line(xOffset, yOffset, x, y); // center to dot
 
 		p5.stroke(color);
-		p5.line(x, y, circleDiameter * 4 + circleDiameter, y); // dot to right edge of waveform
+		p5.line(x, y, xEnd, y); // dot to right edge of waveform
 		p5.fill(color);
 		p5.circle(x, y, circleDiameter * 0.05);
 		p5.pop();
 	};
 
-	const drawTangentLine = (yOffset: number = 0, yScaler: number) => {
+	const drawTangentLine = (
+		xOffset: number,
+		yOffset: number = 0,
+		yScaler: number
+	) => {
 		p5.stroke(colors.darkGrey);
 		p5.line(
-			circleDiameter,
+			circleDiameter + xOffset,
 			yOffset + -circleDiameter * yScaler,
-			circleDiameter,
+			circleDiameter + xOffset,
 			yOffset + circleDiameter * yScaler
 		);
 	};
 
 	const drawWaveForm = (
+		xOffset: number = 0,
+		yOffset: number = 0,
 		amplitudeHistory: number[],
 		amplitudeMultiplier: number,
-		yOffset: number = 0,
 		color: string
 	) => {
 		p5.beginShape();
 		p5.noFill();
 		// draw a vertex for each time sample in the amplitudeHistory array
 		for (let i = 0; i < amplitudeHistory.length; i++) {
-			const x = i + circleDiameter;
+			const x = i + xOffset;
 
 			// amplitudeHistory[i] is a value between 0 and 1
 			// multiply by 2PI to get a value between 0 and 2PI
@@ -188,19 +166,124 @@ export const ArcAngles2DSummingMultiple: Sketch<MySketchProps> = (p5) => {
 			amplitudeHistory.shift();
 	};
 
+	const drawText = (
+		xOffset: number = 0,
+		yOffset: number = 0,
+		circleDiameter: number,
+		radians: number
+	) => {
+		const textXOffset = xOffset + 8;
+		p5.noStroke();
+		p5.fill(colors.lightGrey);
+		p5.textSize(circleDiameter * 0.3);
+		p5.text(
+			`Radians: ${(radians * -1).toFixed(2)} `,
+			circleDiameter + textXOffset,
+			yOffset - 15 - circleDiameter * 0.5
+		);
+		p5.text(
+			`Angle: ${(radians * -1 * (180 / p5.PI)).toFixed(0)} `,
+			circleDiameter + textXOffset,
+			yOffset - circleDiameter * 0.5
+		);
+	};
+
+	const drawWaveformSystem = (
+		xOffset: number,
+		yOffset: number,
+		radians: number,
+		color: string,
+		amplitudeHistory: number[] = [],
+		amplitudeMultiplier: number
+	) => {
+		p5.fill(color);
+
+		drawArc(
+			xOffset,
+			yOffset,
+			circleDiameter * 0.25 * amplitudeMultiplier,
+			radians,
+			color
+		); // draw center arc
+		drawCircle(xOffset, yOffset, circleDiameter * amplitudeMultiplier); // draw unit circle
+
+		drawPointAndLinesToCircleCircumference(
+			xOffset,
+			yOffset,
+			xOffset + 5 * circleDiameter,
+			radians,
+			circleDiameter * amplitudeMultiplier,
+			color
+		);
+
+		drawText(xOffset, yOffset, circleDiameter, radians);
+		drawCoordinateSystemX(
+			xOffset,
+			xOffset + circleDiameter * 5 + circleSpacing,
+			yOffset,
+			colors.lightGrey
+		);
+
+		drawTangentLine(xOffset, yOffset, 1); // draw vertical tangent line
+
+		drawWaveForm(
+			xOffset + circleDiameter,
+			yOffset,
+			amplitudeHistory,
+			amplitudeMultiplier,
+			color
+		);
+	};
+
 	const drawWaveformResult = (
+		xOffset: number = 0,
+		yOffset: number = 0,
 		ampHistoryA: number[],
 		amplitudeMultiplierA: number,
 		ampHistoryB: number[],
 		amplitudeMultiplierB: number,
-		yOffset: number = 0,
 		color: string
 	) => {
+		// ==================== Coordinate System ====================
+		drawCoordinateSystemX(
+			xOffset,
+			xOffset + circleDiameter * 4 + circleSpacing,
+			yOffset - circleDiameter,
+			colors.lightGrey
+		);
+		drawCoordinateSystemX(
+			xOffset,
+			xOffset + circleDiameter * 4 + circleSpacing,
+			yOffset - circleDiameter * 2,
+			colors.lightGrey
+		);
+		drawCoordinateSystemX(
+			xOffset,
+			xOffset + circleDiameter * 4 + circleSpacing,
+			yOffset,
+			colors.darkGrey
+		);
+		drawCoordinateSystemX(
+			xOffset,
+			xOffset + circleDiameter * 4 + circleSpacing,
+			yOffset + circleDiameter,
+			colors.lightGrey
+		);
+		drawCoordinateSystemX(
+			xOffset,
+			xOffset + circleDiameter * 4 + circleSpacing,
+			yOffset + circleDiameter * 2,
+			colors.lightGrey
+		);
+
+		drawTangentLine(xOffset - circleDiameter, yOffset, 2); // draw vertical tangent line
+
+		// ==================== Waveform ====================
 		p5.beginShape();
 		p5.noFill();
 		// draw a vertex for each time sample in the amplitudeHistory array
 		for (let i = 0; i < ampHistoryA.length; i++) {
-			const x = i + circleDiameter;
+			const x = i + xOffset;
 			const y =
 				yOffset +
 				circleDiameter *
@@ -216,71 +299,17 @@ export const ArcAngles2DSummingMultiple: Sketch<MySketchProps> = (p5) => {
 		p5.endShape();
 	};
 
-	const drawText = (
-		circleDiameter: number,
-		radians: number,
-		yOffset: number = 0
-	) => {
-		const xOffset = 8;
-		p5.noStroke();
-		p5.fill(colors.lightGrey);
-		p5.textSize(circleDiameter * 0.3);
-		p5.text(
-			`Radians: ${(radians * -1).toFixed(2)} `,
-			circleDiameter + xOffset,
-			yOffset - 15 - circleDiameter * 0.5
-		);
-		p5.text(
-			`Angle: ${(radians * -1 * (180 / p5.PI)).toFixed(0)} `,
-			circleDiameter + xOffset,
-			yOffset - circleDiameter * 0.5
-		);
-	};
+	// const drawBorder = () => {
+	// 	p5.push();
+	// 	p5.stroke(colors.secondary);
+	// 	p5.fill(colors.secondary);
+	// 	p5.line(0, 0, p5.width, 0);
+	// 	p5.line(0, 0, 0, p5.height);
+	// 	p5.line(p5.width, 0, p5.width, p5.height);
+	// 	p5.line(0, p5.height, p5.width, p5.height);
+	// 	p5.pop();
+	// };
 
-	const drawWaveformSystem = (
-		yOffset: number,
-		radians: number,
-		color: string,
-		amplitudeHistory: number[] = [],
-		amplitudeMultiplier: number,
-		isResult: boolean = false
-	) => {
-		p5.fill(color);
-
-		if (!isResult) {
-			drawArc(
-				circleDiameter * 0.25 * amplitudeMultiplier,
-				radians,
-				yOffset,
-				color
-			); // draw center arc
-			drawCircle(0, yOffset, circleDiameter * amplitudeMultiplier); // draw unit circle
-
-			drawPointAndLinesToCircleCircumference(
-				radians,
-				circleDiameter * amplitudeMultiplier,
-				yOffset,
-				color
-			);
-
-			drawText(circleDiameter, radians, yOffset);
-		}
-
-		drawTangentLine(yOffset, 1); // draw vertical tangent line
-
-		drawWaveForm(amplitudeHistory, amplitudeMultiplier, yOffset, color);
-	};
-
-	const drawBorder = () => {
-		p5.push();
-		p5.stroke(colors.secondary);
-		p5.fill(colors.secondary);
-		p5.line(0, 0, p5.width, 0);
-		p5.line(0, 0, 0, p5.height);
-		p5.line(p5.width, 0, p5.width, p5.height);
-		p5.line(0, p5.height, p5.width, p5.height);
-		p5.pop();
-	};
 	p5.draw = () => {
 		p5.angleMode(p5.RADIANS); // use radians instead of degrees for angle measurements
 
@@ -290,10 +319,6 @@ export const ArcAngles2DSummingMultiple: Sketch<MySketchProps> = (p5) => {
 		const radiansB = p5.TWO_PI * phaseB * -1; // convert time to radians
 
 		p5.background(colors.primary);
-		// p5.translate(
-		// 	circleDiameter + 1,
-		// 	windowHeight * 0.5 - circleSpacing + 1
-		// ); // position the coordinate system
 
 		p5.noStroke();
 		drawCoordinateSystem();
@@ -302,35 +327,32 @@ export const ArcAngles2DSummingMultiple: Sketch<MySketchProps> = (p5) => {
 		amplitudeHistoryB.push(1 - phaseB); // push current time to the amplitudeHistory array
 
 		drawWaveformSystem(
-			-p5.height * 0.5 + circleDiameter + circleSpacing,
+			circleDiameter + circleSpacing,
+			circleDiameter + circleSpacing,
 			radiansA,
 			colors.accent3,
 			amplitudeHistoryA,
-			amplitudeSliderA,
-			false
+			amplitudeSliderA
 		);
 		drawWaveformSystem(
-			-circleDiameter,
+			circleDiameter + circleSpacing,
+			circleDiameter * 3 + circleSpacing * 2,
 			radiansB,
 			colors.accent2,
 			amplitudeHistoryB,
-			amplitudeSliderB,
-			false
+			amplitudeSliderB
 		);
 
-		drawTangentLine(
-			p5.height * 0.5 - circleDiameter * 2 - circleSpacing,
-			2
-		); // draw vertical tangent line
-
 		drawWaveformResult(
+			circleDiameter * 2 + circleSpacing,
+			p5.height - circleDiameter * 2 - circleSpacing,
 			amplitudeHistoryA,
 			amplitudeSliderA,
 			amplitudeHistoryB,
 			amplitudeSliderB,
-			p5.height * 0.5 - circleDiameter * 2 - circleSpacing,
 			colors.secondary
 		);
-		drawBorder();
+
+		// drawBorder();
 	};
 };
