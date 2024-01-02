@@ -36,48 +36,65 @@ export const ArcAngles2DSummingMultiple: Sketch<MySketchProps> = (p5) => {
 		if (props.amplitudeSliderB) amplitudeSliderB = props.amplitudeSliderB;
 	};
 
-	const drawCoordinateSystemX = (color: string, yOffset: number) => {
+	const drawCoordinateSystemX = (
+		xStart: number,
+		color: string,
+		yOffset: number
+	) => {
 		p5.push();
 		p5.stroke(color);
 		p5.point(0, 0, 0);
-		p5.line(-p5.width * 0.5, yOffset, p5.width * 0.5, yOffset);
+		p5.line(xStart, yOffset, p5.width * 0.5, yOffset);
 		p5.pop();
 	};
-	const drawCoordinateSystemY = (color: string) => {
+	const drawCoordinateSystemY = (color: string, yBottom: number) => {
 		p5.push();
 		p5.stroke(color);
 		p5.point(0, 0, 0);
-		p5.line(0, -p5.height * 0.5, 0, p5.height * 0.5);
+		p5.line(0, -p5.height * 0.5, 0, yBottom);
 		p5.pop();
 	};
 
 	const drawCoordinateSystem = () => {
 		drawCoordinateSystemX(
+			-p5.width * 0.5,
 			colors.lightGrey,
 			-circleDiameter * 4 + circleSpacing
 		);
-		drawCoordinateSystemX(colors.lightGrey, -circleDiameter);
+		drawCoordinateSystemX(
+			-p5.width * 0.5,
+			colors.lightGrey,
+			-circleDiameter
+		);
 
 		// ==================== RESULT ====================
-		drawCoordinateSystemX(colors.lightGrey, circleDiameter - circleSpacing);
 		drawCoordinateSystemX(
+			circleDiameter,
+			colors.lightGrey,
+			circleDiameter - circleSpacing
+		);
+		drawCoordinateSystemX(
+			circleDiameter,
 			colors.lightGrey,
 			circleDiameter * 2 - circleSpacing
 		);
 		drawCoordinateSystemX(
+			circleDiameter,
 			colors.darkGrey,
 			circleDiameter * 3 - circleSpacing
 		);
 		drawCoordinateSystemX(
+			circleDiameter,
 			colors.lightGrey,
 			circleDiameter * 4 - circleSpacing
 		);
 		drawCoordinateSystemX(
+			circleDiameter,
 			colors.lightGrey,
 			circleDiameter * 5 - circleSpacing
 		);
 
-		drawCoordinateSystemY(colors.lightGrey);
+		drawCoordinateSystemY(colors.lightGrey, 0);
 	};
 
 	const drawArc = (
@@ -254,6 +271,16 @@ export const ArcAngles2DSummingMultiple: Sketch<MySketchProps> = (p5) => {
 		drawWaveForm(amplitudeHistory, amplitudeMultiplier, yOffset, color);
 	};
 
+	const drawBorder = () => {
+		p5.push();
+		p5.stroke(colors.secondary);
+		p5.fill(colors.secondary);
+		p5.line(0, 0, p5.width, 0);
+		p5.line(0, 0, 0, p5.height);
+		p5.line(p5.width, 0, p5.width, p5.height);
+		p5.line(0, p5.height, p5.width, p5.height);
+		p5.pop();
+	};
 	p5.draw = () => {
 		p5.angleMode(p5.RADIANS); // use radians instead of degrees for angle measurements
 
@@ -263,7 +290,10 @@ export const ArcAngles2DSummingMultiple: Sketch<MySketchProps> = (p5) => {
 		const radiansB = p5.TWO_PI * phaseB * -1; // convert time to radians
 
 		p5.background(colors.primary);
-		p5.translate(2 * circleDiameter, windowHeight * 0.5); // position the coordinate system
+		// p5.translate(
+		// 	circleDiameter + 1,
+		// 	windowHeight * 0.5 - circleSpacing + 1
+		// ); // position the coordinate system
 
 		p5.noStroke();
 		drawCoordinateSystem();
@@ -292,6 +322,7 @@ export const ArcAngles2DSummingMultiple: Sketch<MySketchProps> = (p5) => {
 			p5.height * 0.5 - circleDiameter * 2 - circleSpacing,
 			2
 		); // draw vertical tangent line
+
 		drawWaveformResult(
 			amplitudeHistoryA,
 			amplitudeSliderA,
@@ -300,5 +331,6 @@ export const ArcAngles2DSummingMultiple: Sketch<MySketchProps> = (p5) => {
 			p5.height * 0.5 - circleDiameter * 2 - circleSpacing,
 			colors.secondary
 		);
+		drawBorder();
 	};
 };
