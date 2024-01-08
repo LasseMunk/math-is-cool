@@ -6,12 +6,19 @@ import VerticalSlider from "../utils/vert-slider";
 import { colors } from "../..";
 import { SummingSinewavesDescription } from "./markdown/summing-sinewaves-description";
 import Grid from "@mui/system/Unstable_Grid/Grid";
+import { AmplitudePhaseUnitCircleAudio } from "./audio/amplitude-phase-webaudio";
 
-export const AmplitudePhaseUnitCircle = () => {
+type Props = {
+	audioContext: AudioContext;
+};
+
+export const AmplitudePhaseUnitCircle = (props: Props) => {
 	const [frequencySliderA, setFrequencySliderA] = useState<number>(0.5);
 	const [amplitudeSliderA, setAmplitudeSliderA] = useState<number>(1);
 	const [frequencySliderB, setFrequencySliderB] = useState<number>(0.5);
 	const [amplitudeSliderB, setAmplitudeSliderB] = useState<number>(1);
+
+	const { audioContext } = props;
 
 	return (
 		<Grid
@@ -75,6 +82,7 @@ export const AmplitudePhaseUnitCircle = () => {
 					</Stack>
 				</Stack>
 			</Stack>
+			<AmplitudePhaseUnitCircleAudio audioContext={audioContext} />
 		</Grid>
 	);
 };
